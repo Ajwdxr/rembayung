@@ -1,0 +1,1018 @@
+/* Rembayung - Theme System */
+/* 5 switchable themes using CSS custom properties */
+
+/* ============================================= */
+/* BASE THEME VARIABLES */
+/* ============================================= */
+:root {
+    /* Default: Modern Malaysian */
+    --color-primary: #8B4513;
+    --color-primary-dark: #6B3410;
+    --color-secondary: #D4AF37;
+    --color-background: #FFF8F0;
+    --color-background-dark: #F5EBE0;
+    --color-text: #2C2C2C;
+    --color-text-light: #6B7280;
+    --color-white: #FFFFFF;
+    --color-accent: #A0522D;
+
+    /* Navigation */
+    --nav-bg: rgba(255, 248, 240, 0.95);
+    --nav-text: #2C2C2C;
+    --nav-scrolled-bg: rgba(255, 248, 240, 0.98);
+
+    /* Cards */
+    --card-bg: #FFFFFF;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+
+    /* Footer */
+    --footer-bg: #2C2C2C;
+    --footer-text: #9CA3AF;
+
+    /* Patterns */
+    --pattern-opacity: 0.08;
+    --hero-overlay: linear-gradient(to bottom, rgba(44, 44, 44, 0.3) 0%, rgba(44, 44, 44, 0.5) 50%, rgba(44, 44, 44, 0.8) 100%);
+
+    /* Transitions */
+    --theme-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================= */
+/* THEME 1: MODERN MALAYSIAN (Default) */
+/* ============================================= */
+.theme-modern-malaysian,
+[data-theme="modern-malaysian"] {
+    --color-primary: #8B4513;
+    --color-primary-dark: #6B3410;
+    --color-secondary: #D4AF37;
+    --color-background: #FFF8F0;
+    --color-background-dark: #F5EBE0;
+    --color-text: #2C2C2C;
+    --color-text-light: #6B7280;
+    --color-accent: #A0522D;
+    --nav-bg: rgba(255, 248, 240, 0.95);
+    --nav-text: #2C2C2C;
+    --card-bg: #FFFFFF;
+    --footer-bg: #2C2C2C;
+    --footer-text: #9CA3AF;
+    --pattern-opacity: 0.08;
+    --hero-overlay: linear-gradient(to bottom, rgba(44, 44, 44, 0.3) 0%, rgba(44, 44, 44, 0.5) 50%, rgba(44, 44, 44, 0.8) 100%);
+}
+
+/* ============================================= */
+/* THEME 2: RUSTIC ELEGANCE */
+/* ============================================= */
+[data-theme="rustic-elegance"] {
+    --color-primary: #5D4037;
+    --color-primary-dark: #4E342E;
+    --color-secondary: #8D6E63;
+    --color-background: #EFEBE9;
+    --color-background-dark: #D7CCC8;
+    --color-text: #3E2723;
+    --color-text-light: #6D4C41;
+    --color-accent: #BCAAA4;
+    --nav-bg: rgba(239, 235, 233, 0.95);
+    --nav-text: #3E2723;
+    --card-bg: #FBF9F8;
+    --footer-bg: #3E2723;
+    --footer-text: #A1887F;
+    --pattern-opacity: 0.12;
+    --hero-overlay: linear-gradient(to bottom, rgba(62, 39, 35, 0.4) 0%, rgba(62, 39, 35, 0.6) 50%, rgba(62, 39, 35, 0.85) 100%);
+}
+
+/* ============================================= */
+/* THEME 3: EDITORIAL FOOD */
+/* ============================================= */
+[data-theme="editorial-food"] {
+    --color-primary: #1A1A1A;
+    --color-primary-dark: #000000;
+    --color-secondary: #C9A959;
+    --color-background: #FAFAFA;
+    --color-background-dark: #F0F0F0;
+    --color-text: #1A1A1A;
+    --color-text-light: #666666;
+    --color-accent: #333333;
+    --nav-bg: rgba(250, 250, 250, 0.98);
+    --nav-text: #1A1A1A;
+    --card-bg: #FFFFFF;
+    --footer-bg: #1A1A1A;
+    --footer-text: #888888;
+    --pattern-opacity: 0.03;
+    --hero-overlay: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+/* ============================================= */
+/* THEME 4: DARK & MOODY */
+/* ============================================= */
+[data-theme="dark-moody"] {
+    --color-primary: #D4AF37;
+    --color-primary-dark: #B8960C;
+    --color-secondary: #D4AF37;
+    --color-background: #121212;
+    --color-background-dark: #1A1A1A;
+    --color-text: #F5F5F5;
+    --color-text-light: #AAAAAA;
+    --color-accent: #2C2C2C;
+    --nav-bg: rgba(18, 18, 18, 0.95);
+    --nav-text: #F5F5F5;
+    --card-bg: #1E1E1E;
+    --card-shadow: rgba(0, 0, 0, 0.4);
+    --footer-bg: #0A0A0A;
+    --footer-text: #777777;
+    --pattern-opacity: 0.05;
+    --hero-overlay: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0.9) 100%);
+}
+
+/* ============================================= */
+/* THEME 5: SIGNATURE REMBAYUNG (Fusion) */
+/* ============================================= */
+[data-theme="signature-rembayung"] {
+    --color-primary: #3E2723;
+    --color-primary-dark: #2C1A17;
+    --color-secondary: #D4AF37;
+    --color-background: #1A1A1A;
+    --color-background-dark: #121212;
+    --color-text: #EFEBE9;
+    --color-text-light: #A1887F;
+    --color-accent: #8D6E63;
+    --nav-bg: rgba(26, 26, 26, 0.95);
+    --nav-text: #EFEBE9;
+    --card-bg: #2C2C2C;
+    --card-shadow: rgba(0, 0, 0, 0.5);
+    --footer-bg: #0D0D0D;
+    --footer-text: #8D6E63;
+    --pattern-opacity: 0.08;
+    --hero-overlay: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(62, 39, 35, 0.6) 50%, rgba(26, 26, 26, 0.95) 100%);
+}
+
+/* ============================================= */
+/* THEME-AWARE COMPONENT STYLES */
+/* ============================================= */
+
+/* Body */
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    transition: var(--theme-transition);
+}
+
+/* Navigation */
+#navbar {
+    transition: var(--theme-transition);
+}
+
+#navbar.navbar-scrolled {
+    background: var(--nav-scrolled-bg, var(--nav-bg));
+    backdrop-filter: blur(10px);
+}
+
+#navbar a {
+    color: var(--nav-text);
+}
+
+/* Hero Section */
+.hero-gradient {
+    background: var(--hero-overlay) !important;
+}
+
+/* Section Backgrounds */
+.bg-kampung-cream,
+.theme-bg-light {
+    background-color: var(--color-background) !important;
+    transition: var(--theme-transition);
+}
+
+.bg-kampung-cream-dark,
+.theme-bg-dark {
+    background-color: var(--color-background-dark) !important;
+    transition: var(--theme-transition);
+}
+
+.bg-kampung-charcoal,
+.theme-bg-footer {
+    background-color: var(--footer-bg) !important;
+    transition: var(--theme-transition);
+}
+
+.bg-kampung-brown {
+    background-color: var(--color-primary) !important;
+}
+
+/* Text Colors */
+.text-kampung-charcoal {
+    color: var(--color-text) !important;
+}
+
+.text-kampung-brown {
+    color: var(--color-primary) !important;
+}
+
+.text-kampung-gold,
+.theme-text-accent {
+    color: var(--color-secondary) !important;
+}
+
+.text-gray-400,
+.text-gray-500,
+.text-gray-600,
+.text-gray-700,
+.text-gray-800 {
+    color: var(--color-text-light) !important;
+}
+
+/* Cards */
+.menu-card,
+.admin-card,
+.theme-card {
+    background-color: var(--card-bg) !important;
+    box-shadow: 0 4px 20px var(--card-shadow);
+    transition: var(--theme-transition);
+}
+
+/* Buttons */
+.bg-kampung-gold {
+    background-color: var(--color-secondary) !important;
+}
+
+.hover\:bg-kampung-brown-dark:hover {
+    background-color: var(--color-primary-dark) !important;
+}
+
+/* Forms */
+.form-input {
+    background-color: var(--card-bg);
+    border-color: var(--color-background-dark);
+    color: var(--color-text);
+    transition: var(--theme-transition);
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+}
+
+/* Footer */
+footer {
+    background-color: var(--footer-bg) !important;
+    transition: var(--theme-transition);
+}
+
+footer .text-gray-400,
+footer .text-gray-500 {
+    color: var(--footer-text) !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-track {
+    background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-dark);
+}
+
+/* ============================================= */
+/* THEME-SPECIFIC PATTERNS */
+/* ============================================= */
+
+/* Batik Pattern - Modern Malaysian */
+[data-theme="modern-malaysian"] .batik-pattern,
+.theme-modern-malaysian .batik-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Wood Grain Pattern - Rustic Elegance */
+[data-theme="rustic-elegance"] .batik-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q25 5 50 10 T100 10' fill='none' stroke='%235D4037' stroke-width='0.5' opacity='0.15'/%3E%3Cpath d='M0 15 Q25 10 50 15 T100 15' fill='none' stroke='%235D4037' stroke-width='0.3' opacity='0.1'/%3E%3Cpath d='M0 5 Q25 0 50 5 T100 5' fill='none' stroke='%235D4037' stroke-width='0.3' opacity='0.1'/%3E%3C/svg%3E");
+    background-size: 100px 20px;
+}
+
+/* Grid Pattern - Editorial Food */
+[data-theme="editorial-food"] .batik-pattern {
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* Vignette Pattern - Dark & Moody */
+[data-theme="dark-moody"] .batik-pattern {
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+/* Fusion Pattern - Signature Rembayung */
+[data-theme="signature-rembayung"] .batik-pattern {
+    background-image:
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+        linear-gradient(to bottom, transparent 0%, rgba(141, 110, 99, 0.1) 100%);
+}
+
+/* ============================================= */
+/* THEME SWITCHER UI STYLES */
+/* ============================================= */
+.theme-switcher {
+    position: relative;
+}
+
+.theme-switcher-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-background-dark);
+    border: 2px solid var(--color-primary);
+    cursor: pointer;
+    transition: var(--theme-transition);
+}
+
+.theme-switcher-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px var(--card-shadow);
+}
+
+.theme-switcher-btn svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-primary);
+}
+
+.theme-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 40px var(--card-shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--theme-transition);
+    z-index: 100;
+    min-width: 200px;
+}
+
+.theme-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.theme-panel-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+    margin-bottom: 12px;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--theme-transition);
+    border: 2px solid transparent;
+}
+
+.theme-option:hover {
+    background: var(--color-background-dark);
+}
+
+.theme-option.active {
+    border-color: var(--color-secondary);
+    background: var(--color-background-dark);
+}
+
+.theme-swatch {
+    display: flex;
+    gap: 2px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme swatches need lighter border on light panels */
+.swatch-dark-moody,
+.swatch-signature-rembayung {
+    border-color: rgba(0, 0, 0, 0.25);
+}
+
+.theme-swatch span {
+    width: 12px;
+    height: 24px;
+}
+
+.theme-option-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2C2C2C;
+    white-space: nowrap;
+}
+
+/* Reset color inheritance for theme options - prevent data-theme attribute on options from affecting text */
+.theme-panel .theme-option .theme-option-label {
+    color: #2C2C2C !important;
+}
+
+/* When the PAGE theme is dark, ALL panel labels should be light */
+body[data-theme="dark-moody"] .theme-panel .theme-option .theme-option-label,
+body[data-theme="signature-rembayung"] .theme-panel .theme-option .theme-option-label {
+    color: #F5F5F5 !important;
+}
+
+/* Theme Swatches */
+.swatch-modern-malaysian span:nth-child(1) {
+    background: #8B4513;
+}
+
+.swatch-modern-malaysian span:nth-child(2) {
+    background: #D4AF37;
+}
+
+.swatch-modern-malaysian span:nth-child(3) {
+    background: #FFF8F0;
+}
+
+.swatch-rustic-elegance span:nth-child(1) {
+    background: #5D4037;
+}
+
+.swatch-rustic-elegance span:nth-child(2) {
+    background: #8D6E63;
+}
+
+.swatch-rustic-elegance span:nth-child(3) {
+    background: #EFEBE9;
+}
+
+.swatch-editorial-food span:nth-child(1) {
+    background: #1A1A1A;
+}
+
+.swatch-editorial-food span:nth-child(2) {
+    background: #C9A959;
+}
+
+.swatch-editorial-food span:nth-child(3) {
+    background: #FAFAFA;
+}
+
+.swatch-dark-moody span:nth-child(1) {
+    background: #1A1A1A;
+}
+
+.swatch-dark-moody span:nth-child(2) {
+    background: #D4AF37;
+}
+
+.swatch-dark-moody span:nth-child(3) {
+    background: #121212;
+}
+
+.swatch-signature-rembayung span:nth-child(1) {
+    background: #3E2723;
+}
+
+.swatch-signature-rembayung span:nth-child(2) {
+    background: #D4AF37;
+}
+
+.swatch-signature-rembayung span:nth-child(3) {
+    background: #8D6E63;
+}
+
+/* Signature badge */
+.theme-option[data-theme="signature-rembayung"]::after {
+    content: '⭐';
+    font-size: 12px;
+    margin-left: auto;
+}
+
+/* ============================================= */
+/* DARK THEME SPECIFIC OVERRIDES */
+/* ============================================= */
+[data-theme="dark-moody"] .bg-white,
+[data-theme="signature-rembayung"] .bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark-moody"] .border-gray-100,
+[data-theme="signature-rembayung"] .border-gray-100 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark-moody"] .border-kampung-cream-dark,
+[data-theme="signature-rembayung"] .border-kampung-cream-dark {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Mobile Menu */
+[data-theme="dark-moody"] #mobileMenu,
+[data-theme="signature-rembayung"] #mobileMenu {
+    background: rgba(30, 30, 30, 0.98) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark-moody"] #mobileMenu a,
+[data-theme="signature-rembayung"] #mobileMenu a {
+    color: var(--color-text) !important;
+}
+
+/* Theme Panel (dropdown) for dark themes */
+[data-theme="dark-moody"] .theme-panel,
+[data-theme="signature-rembayung"] .theme-panel {
+    background: #2C2C2C !important;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark-moody"] .theme-panel-title,
+[data-theme="signature-rembayung"] .theme-panel-title {
+    color: #AAAAAA !important;
+}
+
+[data-theme="dark-moody"] .theme-option:hover,
+[data-theme="signature-rembayung"] .theme-option:hover {
+    background: #3A3A3A !important;
+}
+
+[data-theme="dark-moody"] .theme-option.active,
+[data-theme="signature-rembayung"] .theme-option.active {
+    background: #3A3A3A !important;
+    border-color: var(--color-secondary) !important;
+}
+
+[data-theme="dark-moody"] .theme-option-label,
+[data-theme="signature-rembayung"] .theme-option-label {
+    color: #F5F5F5 !important;
+}
+
+/* Theme switcher button for dark themes when scrolled */
+[data-theme="dark-moody"] #navbar.navbar-scrolled .theme-switcher-btn,
+[data-theme="signature-rembayung"] #navbar.navbar-scrolled .theme-switcher-btn {
+    background: #3A3A3A !important;
+    border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+[data-theme="dark-moody"] #navbar.navbar-scrolled .theme-switcher-btn svg,
+[data-theme="signature-rembayung"] #navbar.navbar-scrolled .theme-switcher-btn svg {
+    color: #D4AF37 !important;
+}
+
+/* White sections override for dark themes */
+[data-theme="dark-moody"] section.bg-white,
+[data-theme="signature-rembayung"] section.bg-white {
+    background-color: var(--color-background-dark) !important;
+}
+
+/* CTA Section styling for dark themes */
+[data-theme="dark-moody"] section.bg-kampung-brown,
+[data-theme="signature-rembayung"] section.bg-kampung-brown {
+    background: linear-gradient(135deg, #1A1A1A 0%, #2C2C2C 100%) !important;
+}
+
+/* CTA Button in dark themes - ensure visible text */
+[data-theme="dark-moody"] section.bg-kampung-brown a.bg-white,
+[data-theme="signature-rembayung"] section.bg-kampung-brown a.bg-white {
+    background: #D4AF37 !important;
+    color: #1A1A1A !important;
+}
+
+[data-theme="dark-moody"] section.bg-kampung-brown a.bg-white:hover,
+[data-theme="signature-rembayung"] section.bg-kampung-brown a.bg-white:hover {
+    background: #F5F5F5 !important;
+    color: #1A1A1A !important;
+}
+
+/* Ensure CTA button span text is visible */
+[data-theme="dark-moody"] section.bg-kampung-brown a.bg-white span,
+[data-theme="signature-rembayung"] section.bg-kampung-brown a.bg-white span {
+    color: #1A1A1A !important;
+}
+
+[data-theme="dark-moody"] section.bg-kampung-brown a.bg-white svg,
+[data-theme="signature-rembayung"] section.bg-kampung-brown a.bg-white svg {
+    color: #1A1A1A !important;
+}
+
+/* Signature Rembayung - Warm content sections */
+[data-theme="signature-rembayung"] #about {
+    background: linear-gradient(180deg, var(--color-background-dark) 0%, #2C2C2C 100%) !important;
+}
+
+[data-theme="signature-rembayung"] #menu {
+    background: linear-gradient(180deg, #3E2723 0%, #2C2C2C 100%) !important;
+}
+
+/* ============================================= */
+/* BOOKING PAGE - DARK THEME OVERRIDES */
+/* ============================================= */
+
+/* Booking form container */
+[data-theme="dark-moody"] .bg-kampung-cream,
+[data-theme="signature-rembayung"] .bg-kampung-cream {
+    background: #2C2C2C !important;
+}
+
+[data-theme="dark-moody"] .bg-kampung-cream-dark,
+[data-theme="signature-rembayung"] .bg-kampung-cream-dark {
+    background: #1E1E1E !important;
+}
+
+/* Form labels */
+[data-theme="dark-moody"] .form-label,
+[data-theme="signature-rembayung"] .form-label {
+    color: #F5F5F5 !important;
+}
+
+/* Form inputs */
+[data-theme="dark-moody"] .form-input,
+[data-theme="signature-rembayung"] .form-input {
+    background: #1A1A1A !important;
+    border-color: #444 !important;
+    color: #F5F5F5 !important;
+}
+
+[data-theme="dark-moody"] .form-input::placeholder,
+[data-theme="signature-rembayung"] .form-input::placeholder {
+    color: #777 !important;
+}
+
+[data-theme="dark-moody"] .form-input:focus,
+[data-theme="signature-rembayung"] .form-input:focus {
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Form headings */
+[data-theme="dark-moody"] .text-kampung-charcoal,
+[data-theme="signature-rembayung"] .text-kampung-charcoal {
+    color: #F5F5F5 !important;
+}
+
+/* Submit button - use gold for visibility */
+[data-theme="dark-moody"] button.bg-kampung-brown,
+[data-theme="signature-rembayung"] button.bg-kampung-brown {
+    background: #D4AF37 !important;
+    color: #1A1A1A !important;
+}
+
+[data-theme="dark-moody"] button.bg-kampung-brown:hover,
+[data-theme="signature-rembayung"] button.bg-kampung-brown:hover {
+    background: #C9A959 !important;
+}
+
+[data-theme="dark-moody"] button.bg-kampung-brown span,
+[data-theme="dark-moody"] button.bg-kampung-brown svg,
+[data-theme="signature-rembayung"] button.bg-kampung-brown span,
+[data-theme="signature-rembayung"] button.bg-kampung-brown svg {
+    color: #1A1A1A !important;
+}
+
+/* Border buttons */
+[data-theme="dark-moody"] .border-kampung-brown,
+[data-theme="signature-rembayung"] .border-kampung-brown {
+    border-color: #D4AF37 !important;
+    color: #D4AF37 !important;
+}
+
+[data-theme="dark-moody"] .border-kampung-brown:hover,
+[data-theme="signature-rembayung"] .border-kampung-brown:hover {
+    background: #D4AF37 !important;
+    color: #1A1A1A !important;
+}
+
+/* Info card headings */
+[data-theme="dark-moody"] h4.text-kampung-charcoal,
+[data-theme="signature-rembayung"] h4.text-kampung-charcoal {
+    color: #F5F5F5 !important;
+}
+
+/* Gray text overrides for dark themes */
+[data-theme="dark-moody"] .text-gray-500,
+[data-theme="dark-moody"] .text-gray-600,
+[data-theme="signature-rembayung"] .text-gray-500,
+[data-theme="signature-rembayung"] .text-gray-600 {
+    color: #AAAAAA !important;
+}
+
+/* Confirmation section */
+[data-theme="dark-moody"] #confirmationSection h2,
+[data-theme="signature-rembayung"] #confirmationSection h2 {
+    color: #F5F5F5 !important;
+}
+
+/* ============================================= */
+/* THEME-AWARE NAVIGATION ELEMENTS */
+/* ============================================= */
+
+/* Logo Image */
+.nav-logo-img {
+    transition: var(--theme-transition);
+    filter: brightness(1);
+}
+
+/* On transparent navbar (over hero), logo is already gold - should be visible */
+#navbar:not(.navbar-scrolled) .nav-logo-img {
+    filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Scrolled state - logo visibility adjustments */
+#navbar.navbar-scrolled .nav-logo-img {
+    filter: brightness(1);
+}
+
+/* Dark themes - ensure logo is bright enough when scrolled */
+[data-theme="dark-moody"] #navbar.navbar-scrolled .nav-logo-img,
+[data-theme="signature-rembayung"] #navbar.navbar-scrolled .nav-logo-img {
+    filter: brightness(1.1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Navigation Links */
+.nav-link-themed {
+    color: var(--nav-text);
+    transition: var(--theme-transition);
+}
+
+.nav-link-themed:hover {
+    color: var(--color-primary);
+}
+
+/* Primary Button (Reserve a Table) */
+.btn-primary-themed {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    transition: var(--theme-transition);
+}
+
+.btn-primary-themed:hover {
+    background-color: var(--color-primary-dark);
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    color: var(--nav-text);
+    transition: var(--theme-transition);
+}
+
+.mobile-menu-btn svg {
+    color: inherit;
+}
+
+/* Mobile Menu Panel */
+.mobile-menu-panel {
+    background: var(--nav-bg);
+    border-color: var(--color-background-dark);
+    transition: var(--theme-transition);
+}
+
+/* Mobile Nav Links */
+.mobile-nav-link {
+    color: var(--color-text);
+    transition: var(--theme-transition);
+}
+
+.mobile-nav-link:hover {
+    color: var(--color-primary);
+}
+
+/* Mobile Theme Section */
+.mobile-theme-section-border {
+    border-color: var(--color-background-dark);
+}
+
+.mobile-theme-label {
+    color: var(--color-text);
+}
+
+/* ============================================= */
+/* HERO HEADER OVERRIDES - TRANSPARENT NAV STATE */
+/* ============================================= */
+/* When navbar is transparent over dark hero image, force light colors */
+
+/* Default (transparent) state - light colors for visibility over dark hero */
+#navbar:not(.navbar-scrolled) .nav-logo {
+    color: #D4AF37 !important;
+    /* Gold logo over hero */
+}
+
+#navbar:not(.navbar-scrolled) .nav-link-themed {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+#navbar:not(.navbar-scrolled) .nav-link-themed:hover {
+    color: #D4AF37 !important;
+}
+
+#navbar:not(.navbar-scrolled) .btn-primary-themed {
+    background-color: #D4AF37 !important;
+    color: #2C2C2C !important;
+}
+
+#navbar:not(.navbar-scrolled) .btn-primary-themed:hover {
+    background-color: #C9A959 !important;
+}
+
+#navbar:not(.navbar-scrolled) .theme-switcher-btn {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+#navbar:not(.navbar-scrolled) .theme-switcher-btn svg {
+    color: #FFFFFF !important;
+}
+
+#navbar:not(.navbar-scrolled) .mobile-menu-btn {
+    color: #FFFFFF !important;
+}
+
+#navbar:not(.navbar-scrolled) .mobile-menu-btn svg {
+    color: #FFFFFF !important;
+}
+
+/* Scrolled state - use theme colors */
+#navbar.navbar-scrolled .nav-logo {
+    color: var(--color-primary);
+}
+
+/* Dark themes - logo should be gold for visibility when scrolled */
+[data-theme="dark-moody"] #navbar.navbar-scrolled .nav-logo,
+[data-theme="signature-rembayung"] #navbar.navbar-scrolled .nav-logo {
+    color: #D4AF37 !important;
+}
+
+#navbar.navbar-scrolled .nav-link-themed {
+    color: var(--nav-text);
+}
+
+#navbar.navbar-scrolled .nav-link-themed:hover {
+    color: var(--color-primary);
+}
+
+#navbar.navbar-scrolled .btn-primary-themed {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+#navbar.navbar-scrolled .btn-primary-themed:hover {
+    background-color: var(--color-primary-dark);
+}
+
+/* Dark & Moody - Scrolled navbar distinction */
+[data-theme="dark-moody"] #navbar.navbar-scrolled {
+    background: rgba(30, 30, 30, 0.98) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Signature Rembayung - Scrolled navbar distinction */
+[data-theme="signature-rembayung"] #navbar.navbar-scrolled {
+    background: rgba(44, 44, 44, 0.98) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================= */
+/* MOBILE THEME BUTTONS */
+/* ============================================= */
+.mobile-theme-btn {
+    background: var(--card-bg);
+    border-color: var(--color-background-dark);
+    color: var(--color-text);
+    transition: var(--theme-transition);
+}
+
+.mobile-theme-btn:hover {
+    border-color: var(--color-primary);
+    background: var(--color-background-dark);
+}
+
+.mobile-theme-btn.active {
+    border-color: var(--color-secondary);
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Mobile theme section styling for dark themes */
+[data-theme="dark-moody"] .mobile-theme-btn,
+[data-theme="signature-rembayung"] .mobile-theme-btn {
+    background: #2C2C2C;
+    border-color: #444;
+    color: #F5F5F5;
+}
+
+[data-theme="dark-moody"] .mobile-theme-btn.active,
+[data-theme="signature-rembayung"] .mobile-theme-btn.active {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: #1A1A1A;
+}
+
+[data-theme="dark-moody"] #mobileThemeOptions p,
+[data-theme="signature-rembayung"] #mobileThemeOptions p,
+[data-theme="dark-moody"] .border-kampung-cream-dark+.pt-4 p,
+[data-theme="signature-rembayung"] .border-kampung-cream-dark+.pt-4 p {
+    color: var(--color-text) !important;
+}
+
+/* ============================================= */
+/* CALENDAR COMPONENT THEMING */
+/* ============================================= */
+
+.calendar-grid-container {
+    background-color: var(--color-background-dark) !important;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark-moody"] .calendar-grid-container,
+[data-theme="signature-rembayung"] .calendar-grid-container {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-day-header {
+    background-color: var(--color-background-dark) !important;
+    color: var(--color-text-light) !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="dark-moody"] .calendar-day-header,
+[data-theme="signature-rembayung"] .calendar-day-header {
+    background-color: #1A1A1A !important;
+    border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.calendar-grid {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="dark-moody"] .calendar-grid,
+[data-theme="signature-rembayung"] .calendar-grid {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.calendar-cell {
+    background-color: var(--card-bg) !important;
+    color: var(--color-text) !important;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.calendar-cell.empty {
+    background-color: rgba(0, 0, 0, 0.02) !important;
+    opacity: 0.3;
+}
+
+.calendar-day-number {
+    color: var(--color-text) !important;
+}
+
+.calendar-day-number.text-kampung-gold {
+    color: var(--color-secondary) !important;
+    font-weight: 700 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px !important;
+}
+
+.calendar-cell:hover:not(.disabled) {
+    background-color: var(--color-background-dark) !important;
+}
+
+.calendar-cell.disabled {
+    opacity: 0.25 !important;
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="dark-moody"] .calendar-cell.disabled,
+[data-theme="signature-rembayung"] .calendar-cell.disabled {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.calendar-cell.selected {
+    background-color: rgba(212, 175, 55, 0.15) !important;
+    box-shadow: inset 0 0 0 2px var(--color-secondary) !important;
+}
+
+/* Gray text classes override - ensure visibility of legend labels */
+.text-gray-400,
+.text-gray-500,
+.text-gray-600 {
+    color: var(--color-text-light) !important;
+}
+
+[data-theme="dark-moody"] .text-gray-600,
+[data-theme="signature-rembayung"] .text-gray-600 {
+    color: var(--color-text) !important;
+    opacity: 0.8;
+}
