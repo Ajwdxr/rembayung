@@ -103,8 +103,8 @@ $pageTitle = 'Reserve a Table';
                             </div>
                         </div>
                         
-                        <!-- Session Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Session Row with Availability -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                             
                             <!-- Session -->
                             <div>
@@ -114,15 +114,20 @@ $pageTitle = 'Reserve a Table';
                                 <select id="session_id" name="session_id" class="form-input" required>
                                     <option value="">Select session</option>
                                 </select>
-                                <!-- Availability Indicator -->
-                                <div id="availabilityIndicator" class="hidden mt-2">
-                                    <div class="flex items-center gap-2 text-sm">
-                                        <span id="availabilityIcon" class="w-2 h-2 rounded-full"></span>
-                                        <span id="availabilityText" class="text-gray-600"></span>
+                            </div>
+                            
+                            <!-- Availability Indicator (Side by Side) -->
+                            <div id="availabilityIndicator" class="hidden">
+                                <label class="form-label">Slot Available</label>
+                                <div class="bg-white border-2 border-gray-200 rounded-xl p-4 shadow-sm">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span id="availabilityIcon" class="w-4 h-4 rounded-full animate-pulse"></span>
+                                        <span id="availabilityText" class="font-semibold text-base"></span>
                                     </div>
-                                    <div id="availabilityBar" class="mt-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div id="availabilityProgress" class="h-full transition-all duration-300 rounded-full"></div>
+                                    <div id="availabilityBar" class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                        <div id="availabilityProgress" class="h-full transition-all duration-500 rounded-full"></div>
                                     </div>
+                                    <p id="availabilitySubtext" class="text-xs text-gray-500 mt-2"></p>
                                 </div>
                             </div>
                         </div>
@@ -312,6 +317,14 @@ let selectedDate = null;
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 
                 'July', 'August', 'September', 'October', 'November', 'December'];
 
+// Helper function to format date as YYYY-MM-DD without timezone issues
+function formatDateLocal(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     loadSessions();
     setupFormHandler();
@@ -353,8 +366,8 @@ async function renderCalendar() {
     
     // Fetch availability data
     await fetchCalendarData(
-        startDate.toISOString().split('T')[0],
-        endDate.toISOString().split('T')[0]
+        formatDateLocal(startDate),
+        formatDateLocal(endDate)
     );
     
     // Build calendar grid
@@ -388,7 +401,7 @@ async function renderCalendar() {
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
         date.setHours(0, 0, 0, 0);
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = formatDateLocal(date);
         
         const dayData = calendarData[dateStr] || { status: 'available', statusLabel: 'Available' };
         
@@ -627,35 +640,50 @@ function displayAvailability(availability) {
     const icon = document.getElementById('availabilityIcon');
     const text = document.getElementById('availabilityText');
     const progress = document.getElementById('availabilityProgress');
+    const subtext = document.getElementById('availabilitySubtext');
     
     const { remaining_pax, max_pax, booked_pax } = availability;
     const percentage = Math.round((remaining_pax / max_pax) * 100);
     
-    let colorClass, bgClass;
+    let colorClass, bgClass, borderClass;
     if (percentage > 50) {
         colorClass = 'bg-green-500';
         bgClass = 'text-green-600';
+        borderClass = 'border-green-300';
     } else if (percentage > 20) {
         colorClass = 'bg-yellow-500';
         bgClass = 'text-yellow-600';
+        borderClass = 'border-yellow-300';
     } else if (percentage > 0) {
         colorClass = 'bg-orange-500';
         bgClass = 'text-orange-600';
+        borderClass = 'border-orange-300';
     } else {
         colorClass = 'bg-red-500';
         bgClass = 'text-red-600';
+        borderClass = 'border-red-300';
     }
     
-    icon.className = `w-2 h-2 rounded-full ${colorClass}`;
-    progress.className = `h-full transition-all duration-300 rounded-full ${colorClass}`;
+    // Update container border color
+    const container = indicator.querySelector('.bg-white');
+    if (container) {
+        container.className = `bg-white border-2 ${borderClass} rounded-xl p-4 shadow-sm`;
+    }
+    
+    icon.className = `w-4 h-4 rounded-full animate-pulse ${colorClass}`;
+    progress.className = `h-full transition-all duration-500 rounded-full ${colorClass}`;
     progress.style.width = `${percentage}%`;
     
+    // Main text - more prominent
     if (remaining_pax === 0) {
-        text.innerHTML = `<span class="${bgClass} font-medium">Fully booked</span> for this session`;
+        text.innerHTML = `<span class="${bgClass}">Fully Booked!</span>`;
+        subtext.textContent = 'Please select another session or date';
     } else if (remaining_pax <= 20) {
-        text.innerHTML = `<span class="${bgClass} font-medium">Only ${remaining_pax} pax remaining!</span> (${booked_pax}/${max_pax} booked)`;
+        text.innerHTML = `<span class="${bgClass}">Only ${remaining_pax} pax left!</span>`;
+        subtext.textContent = `${booked_pax} of ${max_pax} pax booked - Book now!`;
     } else {
-        text.innerHTML = `<span class="${bgClass} font-medium">${remaining_pax} pax available</span> (${booked_pax}/${max_pax} booked)`;
+        text.innerHTML = `<span class="${bgClass}">${remaining_pax} pax available</span>`;
+        subtext.textContent = `${booked_pax} of ${max_pax} pax booked`;
     }
     
     indicator.classList.remove('hidden');

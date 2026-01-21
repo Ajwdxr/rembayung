@@ -3,46 +3,73 @@
  * Rembayung - Landing Page
  */
 require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/supabase.php';
 $pageTitle = 'Home';
 
-// Menu items (static for now)
-$menuItems = [
-    [
-        'name' => 'Nasi Kampung Rembayung',
-        'description' => 'Our signature dish. Fragrant rice served with sambal ikan bilis, ayam goreng berempah, and ulam.',
-        'price' => 'RM 28',
-        'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400'
-    ],
-    [
-        'name' => 'Rendang Tok',
-        'description' => 'Slow-cooked beef rendang using generations-old Perak recipe. Rich and aromatic.',
-        'price' => 'RM 38',
-        'image' => 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400'
-    ],
-    [
-        'name' => 'Gulai Lemak Ikan Patin',
-        'description' => 'Creamy turmeric curry with fresh patin fish and ulam raja.',
-        'price' => 'RM 35',
-        'image' => 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400'
-    ],
-    [
-        'name' => 'Ayam Percik',
-        'description' => 'Grilled chicken marinated in coconut milk and spices, served with nasi kerabu.',
-        'price' => 'RM 32',
-        'image' => 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400'
-    ],
-    [
-        'name' => 'Sambal Petai Udang',
-        'description' => 'Tiger prawns stir-fried with petai beans in fiery sambal belacan.',
-        'price' => 'RM 42',
-        'image' => 'https://images.unsplash.com/photo-1625943553852-781c6dd46faa?w=400'
-    ],
-    [
-        'name' => 'Kuih Kampung Selection',
-        'description' => 'Assorted traditional kuih - onde-onde, kuih lapis, seri muka, and more.',
-        'price' => 'RM 18',
-        'image' => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'
-    ]
+$supabase = new Supabase();
+
+// Fetch menu items from database
+$menuResult = $supabase->get('menu_items', 'is_active=eq.true&is_featured=eq.true&order=display_order.asc&limit=6');
+$menuItems = [];
+if ($menuResult['success'] && !empty($menuResult['data'])) {
+    $menuItems = $menuResult['data'];
+} else {
+    // Fallback to default menu items if database is empty
+    $menuItems = [
+        [
+            'name' => 'Nasi Kampung Rembayung',
+            'description' => 'Our signature dish. Fragrant rice served with sambal ikan bilis, ayam goreng berempah, and ulam.',
+            'price' => 'RM 28',
+            'image_filename' => null
+        ],
+        [
+            'name' => 'Rendang Tok',
+            'description' => 'Slow-cooked beef rendang using generations-old Perak recipe. Rich and aromatic.',
+            'price' => 'RM 38',
+            'image_filename' => null
+        ],
+        [
+            'name' => 'Gulai Lemak Ikan Patin',
+            'description' => 'Creamy turmeric curry with fresh patin fish and ulam raja.',
+            'price' => 'RM 35',
+            'image_filename' => null
+        ],
+        [
+            'name' => 'Ayam Percik',
+            'description' => 'Grilled chicken marinated in coconut milk and spices, served with nasi kerabu.',
+            'price' => 'RM 32',
+            'image_filename' => null
+        ],
+        [
+            'name' => 'Sambal Petai Udang',
+            'description' => 'Tiger prawns stir-fried with petai beans in fiery sambal belacan.',
+            'price' => 'RM 42',
+            'image_filename' => null
+        ],
+        [
+            'name' => 'Kuih Kampung Selection',
+            'description' => 'Assorted traditional kuih - onde-onde, kuih lapis, seri muka, and more.',
+            'price' => 'RM 18',
+            'image_filename' => null
+        ]
+    ];
+}
+
+// Fetch about content from database
+$aboutResult = $supabase->get('about_content', 'is_active=eq.true&order=display_order.asc&limit=1');
+$aboutContent = null;
+if ($aboutResult['success'] && !empty($aboutResult['data'])) {
+    $aboutContent = $aboutResult['data'][0];
+}
+
+// Default placeholder images for items without uploaded images
+$defaultImages = [
+    'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400',
+    'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400',
+    'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400',
+    'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400',
+    'https://images.unsplash.com/photo-1625943553852-781c6dd46faa?w=400',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'
 ];
 ?>
 <?php require_once __DIR__ . '/includes/header.php'; ?>
@@ -98,8 +125,14 @@ $menuItems = [
                 <!-- Image -->
                 <div class="relative scroll-reveal-left">
                     <div class="aspect-[4/5] rounded-2xl overflow-hidden">
+                        <?php 
+                        $aboutImage = 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800';
+                        if ($aboutContent && !empty($aboutContent['image_filename'])) {
+                            $aboutImage = BASE_URL . '/assets/uploads/about/' . $aboutContent['image_filename'];
+                        }
+                        ?>
                         <img 
-                            src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800" 
+                            src="<?= $aboutImage ?>" 
                             alt="Chef preparing food" 
                             class="w-full h-full object-cover"
                         >
@@ -112,9 +145,14 @@ $menuItems = [
                 <div class="scroll-reveal-right">
                     <p class="text-kampung-gold font-medium tracking-wider uppercase mb-4">Our Story</p>
                     <h2 class="font-heading text-4xl md:text-5xl font-bold text-kampung-charcoal mb-6">
-                        From Kampung to <br>City, With Love
+                        <?= $aboutContent ? htmlspecialchars($aboutContent['title']) : 'From Kampung to <br>City, With Love' ?>
                     </h2>
                     <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <?php if ($aboutContent && !empty($aboutContent['description'])): ?>
+                            <?php foreach (explode("\n\n", $aboutContent['description']) as $paragraph): ?>
+                            <p><?= nl2br(htmlspecialchars($paragraph)) ?></p>
+                            <?php endforeach; ?>
+                        <?php else: ?>
                         <p>
                             Rembayung is born from a deep love for Malaysian heritage cuisine. Founded by Khairul Aming, 
                             a culinary storyteller who has touched millions of hearts through his authentic recipes and 
@@ -130,14 +168,15 @@ $menuItems = [
                             traditional techniques, and recipes passed down through generations, presented with 
                             modern elegance.
                         </p>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Signature -->
                     <div class="mt-8 pt-8 border-t border-gray-100">
                         <p class="font-heading text-2xl text-kampung-brown italic">
-                            "Masak dengan hati, hidang dengan kasih."
+                            "<?= $aboutContent && !empty($aboutContent['quote']) ? htmlspecialchars($aboutContent['quote']) : 'Masak dengan hati, hidang dengan kasih.' ?>"
                         </p>
-                        <p class="text-gray-500 mt-2">— Khairul Aming</p>
+                        <p class="text-gray-500 mt-2">— <?= $aboutContent && !empty($aboutContent['quote_author']) ? htmlspecialchars($aboutContent['quote_author']) : 'Khairul Aming' ?></p>
                     </div>
                 </div>
             </div>
@@ -164,24 +203,30 @@ $menuItems = [
             
             <!-- Menu Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php foreach ($menuItems as $index => $item): ?>
+                <?php foreach ($menuItems as $index => $item): 
+                    // Determine image source
+                    $menuImage = $defaultImages[$index % count($defaultImages)];
+                    if (!empty($item['image_filename'])) {
+                        $menuImage = BASE_URL . '/assets/uploads/menu/' . $item['image_filename'];
+                    }
+                ?>
                 <div class="menu-card relative bg-white rounded-2xl overflow-hidden shadow-lg scroll-reveal stagger-<?= ($index % 3) + 1 ?>">
                     <div class="aspect-[4/3] overflow-hidden">
                         <img 
-                            src="<?= $item['image'] ?>" 
-                            alt="<?= $item['name'] ?>" 
+                            src="<?= $menuImage ?>" 
+                            alt="<?= htmlspecialchars($item['name']) ?>" 
                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                         >
                     </div>
                     <div class="p-6">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-heading text-xl font-semibold text-kampung-charcoal">
-                                <?= $item['name'] ?>
+                                <?= htmlspecialchars($item['name']) ?>
                             </h3>
-                            <span class="text-kampung-gold font-semibold"><?= $item['price'] ?></span>
+                            <span class="text-kampung-gold font-semibold"><?= htmlspecialchars($item['price']) ?></span>
                         </div>
                         <p class="text-gray-500 text-sm">
-                            <?= $item['description'] ?>
+                            <?= htmlspecialchars($item['description']) ?>
                         </p>
                     </div>
                 </div>

@@ -713,6 +713,23 @@ body[data-theme="signature-rembayung"] .theme-panel .theme-option .theme-option-
     color: #F5F5F5 !important;
 }
 
+/* Selected date display */
+[data-theme="dark-moody"] #selectedDateDisplay,
+[data-theme="signature-rembayung"] #selectedDateDisplay {
+    background: rgba(212, 175, 55, 0.2) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+[data-theme="dark-moody"] #selectedDateDisplay .text-kampung-brown,
+[data-theme="signature-rembayung"] #selectedDateDisplay .text-kampung-brown {
+    color: #D4AF37 !important;
+}
+
+[data-theme="dark-moody"] #selectedDateText,
+[data-theme="signature-rembayung"] #selectedDateText {
+    color: #F5F5F5 !important;
+}
+
 /* ============================================= */
 /* THEME-AWARE NAVIGATION ELEMENTS */
 /* ============================================= */
