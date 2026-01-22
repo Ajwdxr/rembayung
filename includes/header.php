@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Rembayung - Authentic Kampung Cuisine by Khairul Aming. Experience the taste of Malaysian heritage in modern elegance.">
     <title><?= isset($pageTitle) ? $pageTitle . ' | ' . SITE_NAME : SITE_NAME ?></title>
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/favicon.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

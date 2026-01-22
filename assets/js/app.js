@@ -92,14 +92,16 @@ function initScrollAnimations() {
 
 /**
  * Booking form handling
+ * Note: Form submission is handled by booking.php's inline script
+ * This function only sets up date input constraints and real-time validation
  */
 function initBookingForm() {
     const form = document.getElementById('bookingForm');
     if (!form) return;
 
-    // Set minimum date to today
+    // Set minimum date to today (for non-calendar based date inputs)
     const dateInput = document.getElementById('booking_date');
-    if (dateInput) {
+    if (dateInput && dateInput.type === 'date') {
         const today = new Date().toISOString().split('T')[0];
         dateInput.setAttribute('min', today);
 
@@ -109,58 +111,7 @@ function initBookingForm() {
         dateInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
     }
 
-    // Form submission
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        // Validate form
-        if (!validateBookingForm()) return;
-
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `
-            <svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Processing...
-        `;
-
-        try {
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                showToast('success', 'Reservation submitted successfully! We will contact you shortly.');
-                form.reset();
-
-                // Show confirmation section
-                const confirmSection = document.getElementById('confirmationSection');
-                if (confirmSection) {
-                    confirmSection.classList.remove('hidden');
-                    form.classList.add('hidden');
-                }
-            } else {
-                showToast('error', result.message || 'Something went wrong. Please try again.');
-            }
-        } catch (error) {
-            console.error('Booking error:', error);
-            showToast('error', 'Connection error. Please try again later.');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
-    });
-
-    // Real-time validation
+    // Real-time validation only (form submission handled by booking.php)
     form.querySelectorAll('.form-input').forEach(input => {
         input.addEventListener('blur', function () {
             validateField(this);
@@ -208,8 +159,8 @@ function validateField(field) {
     const existingError = field.parentElement.querySelector('.error-message');
     if (existingError) existingError.remove();
 
-    // Check required
-    if (!value) {
+    // Check required - only for fields with required attribute
+    if (!value && field.hasAttribute('required')) {
         isValid = false;
         errorMessage = 'This field is required';
     }

@@ -133,14 +133,32 @@ if ($result['success']) {
         'data' => $result['data']
     ]);
 } else {
-    http_response_code(500);
-    // Include detailed error for debugging
+    http_response_code(400);
+    
+    // Parse error message from database trigger or API
     $errorMsg = 'Failed to submit booking.';
+    $rawError = '';
+    
     if (isset($result['data']['message'])) {
-        $errorMsg .= ' ' . $result['data']['message'];
+        $rawError = $result['data']['message'];
     } elseif (isset($result['data']['error'])) {
-        $errorMsg .= ' ' . $result['data']['error'];
+        $rawError = $result['data']['error'];
     }
+    
+    // Check for capacity-related errors from our trigger
+    if (strpos($rawError, 'Sorry,') !== false) {
+        // Extract the user-friendly message from the trigger
+        if (preg_match('/Sorry,[^"]+/', $rawError, $matches)) {
+            $errorMsg = trim($matches[0]);
+        } else {
+            $errorMsg = $rawError;
+        }
+    } elseif (strpos($rawError, 'check_violation') !== false || strpos($rawError, 'capacity') !== false) {
+        $errorMsg = 'Sorry, this session has insufficient capacity. Please try a different session or date.';
+    } elseif (!empty($rawError)) {
+        $errorMsg .= ' ' . $rawError;
+    }
+    
     echo json_encode([
         'success' => false,
         'message' => $errorMsg,

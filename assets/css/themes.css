@@ -1033,3 +1033,19 @@ body[data-theme="signature-rembayung"] .theme-panel .theme-option .theme-option-
     color: var(--color-text) !important;
     opacity: 0.8;
 }
+
+/* ============================================= */
+/* QUOTE TEXT - DARK THEME OVERRIDES */
+/* ============================================= */
+/* Fix quote "Masak dengan hati, hidang dengan kasih" visibility in dark themes */
+[data-theme="dark-moody"] .text-kampung-brown.italic,
+[data-theme="signature-rembayung"] .text-kampung-brown.italic {
+    color: #D4AF37 !important;
+    /* Gold color for visibility */
+}
+
+/* Also fix the italic quote section specifically in the About section */
+[data-theme="dark-moody"] #about .font-heading.italic,
+[data-theme="signature-rembayung"] #about .font-heading.italic {
+    color: #D4AF37 !important;
+}
