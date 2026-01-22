@@ -1,9 +1,9 @@
--- Concurrent Booking Protection Trigger
+-- Concurrent Booking Protection Trigger with FIFO Ordering
 -- Run this in Supabase SQL Editor
--- This prevents overbooking when multiple bookings arrive simultaneously
+-- This prevents overbooking and ensures first-come-first-served by milliseconds
 
 -- ============================================
--- STEP 1: Create the validation function
+-- STEP 1: Create the validation function with advisory lock
 -- ============================================
 
 CREATE OR REPLACE FUNCTION check_booking_capacity()
@@ -12,7 +12,16 @@ DECLARE
     session_max_pax INTEGER;
     current_booked_pax INTEGER;
     remaining_pax INTEGER;
+    lock_key BIGINT;
 BEGIN
+    -- Create a unique lock key based on session_id and booking_date
+    -- This ensures bookings for the same session+date are processed one at a time (FIFO)
+    lock_key := hashtext(NEW.session_id::text || NEW.booking_date::text);
+    
+    -- Acquire advisory lock - this serializes concurrent bookings
+    -- First booking to acquire the lock gets processed first (by milliseconds)
+    PERFORM pg_advisory_xact_lock(lock_key);
+    
     -- Get the max pax for this session
     SELECT max_pax INTO session_max_pax
     FROM booking_sessions

@@ -21,7 +21,8 @@ $supabase = new Supabase();
 $uploadPaths = [
     'about' => __DIR__ . '/../../assets/uploads/about/',
     'menu' => __DIR__ . '/../../assets/uploads/menu/',
-    'gallery' => __DIR__ . '/../../assets/uploads/gallery/'
+    'gallery' => __DIR__ . '/../../assets/uploads/gallery/',
+    'hero' => __DIR__ . '/../../assets/uploads/hero/'
 ];
 
 // Allowed file types
@@ -211,6 +212,46 @@ switch ($method) {
             
             echo json_encode(['success' => $result['success'], 'data' => $result['data']]);
             
+        } elseif ($type === 'hero') {
+            $data = [
+                'title' => sanitize($_POST['title'] ?? ''),
+                'subtitle' => $_POST['subtitle'] ?? '',
+                'tagline' => $_POST['tagline'] ?? '',
+                'is_active' => isset($_POST['is_active']) && $_POST['is_active'] === '1',
+                'updated_at' => date('c')
+            ];
+            
+            // Handle image upload
+            if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+                $upload = handleFileUpload($_FILES['image'], $uploadPaths['hero'], 'hero_');
+                if (!$upload['success']) {
+                    echo json_encode(['success' => false, 'error' => $upload['error']]);
+                    exit;
+                }
+                if ($upload['filename']) {
+                    // Delete old file if updating
+                    if ($id) {
+                        $existing = $supabase->get('hero_content', 'id=eq.' . $id);
+                        if ($existing['success'] && !empty($existing['data'])) {
+                            deleteOldFile($existing['data'][0]['image_filename'], $uploadPaths['hero']);
+                        }
+                    }
+                    $data['image_filename'] = $upload['filename'];
+                }
+            } elseif (!$id) {
+                // New hero item requires image
+                echo json_encode(['success' => false, 'error' => 'Image is required for hero content']);
+                exit;
+            }
+            
+            if ($id) {
+                $result = $supabase->update('hero_content', 'id=eq.' . $id, $data);
+            } else {
+                $result = $supabase->insert('hero_content', $data);
+            }
+            
+            echo json_encode(['success' => $result['success'], 'data' => $result['data']]);
+            
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid content type']);
         }
@@ -241,6 +282,8 @@ switch ($method) {
                 $uploadPath = $uploadPaths['menu'];
             } elseif ($table === 'gallery_images') {
                 $uploadPath = $uploadPaths['gallery'];
+            } elseif ($table === 'hero_content') {
+                $uploadPath = $uploadPaths['hero'];
             }
             
             // Delete the file
@@ -262,7 +305,8 @@ switch ($method) {
         $tableMap = [
             'about' => 'about_content',
             'menu' => 'menu_items',
-            'gallery' => 'gallery_images'
+            'gallery' => 'gallery_images',
+            'hero' => 'hero_content'
         ];
         
         if (!isset($tableMap[$type])) {

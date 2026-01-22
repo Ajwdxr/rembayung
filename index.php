@@ -62,6 +62,13 @@ if ($aboutResult['success'] && !empty($aboutResult['data'])) {
     $aboutContent = $aboutResult['data'][0];
 }
 
+// Fetch hero content from database
+$heroResult = $supabase->get('hero_content', 'is_active=eq.true&order=created_at.desc&limit=1');
+$heroContent = null;
+if ($heroResult['success'] && !empty($heroResult['data'])) {
+    $heroContent = $heroResult['data'][0];
+}
+
 // Default placeholder images for items without uploaded images
 $defaultImages = [
     'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400',
@@ -78,8 +85,14 @@ $defaultImages = [
     <section class="relative h-screen flex items-center justify-center overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0">
+            <?php 
+            $heroImage = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920';
+            if ($heroContent && !empty($heroContent['image_filename'])) {
+                $heroImage = BASE_URL . '/assets/uploads/hero/' . $heroContent['image_filename'];
+            }
+            ?>
             <img 
-                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920" 
+                src="<?= $heroImage ?>" 
                 alt="Restaurant ambiance" 
                 class="w-full h-full object-cover"
             >
@@ -281,9 +294,8 @@ $defaultImages = [
                             </div>
                             <div>
                                 <h3 class="font-semibold text-lg mb-1">Operating Hours</h3>
-                                <p class="text-gray-400">Lunch: 11:30 AM - 3:00 PM</p>
-                                <p class="text-gray-400">Dinner: 6:00 PM - 10:00 PM</p>
-                                <p class="text-kampung-gold mt-1">Closed on Mondays</p>
+                                <p class="text-gray-400">Daily: 11:00 AM - 11:00 PM</p>
+                                <p class="text-kampung-gold mt-1">Closed on <?= CLOSED_DAY ?>s</p>
                             </div>
                         </div>
                         
@@ -296,8 +308,7 @@ $defaultImages = [
                             </div>
                             <div>
                                 <h3 class="font-semibold text-lg mb-1">Reservations</h3>
-                                <p class="text-gray-400"><?= RESTAURANT_PHONE ?></p>
-                                <p class="text-gray-400"><?= RESTAURANT_EMAIL ?></p>
+                                <a href="<?= BASE_URL ?>/booking.php" class="text-kampung-gold hover:text-white transition-colors underline">Reservation</a>
                             </div>
                         </div>
                     </div>
@@ -307,7 +318,7 @@ $defaultImages = [
                 <div class="scroll-reveal-right">
                     <div class="rounded-2xl overflow-hidden h-[400px] lg:h-full min-h-[400px]">
                         <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.7534!2d101.698!3d3.1569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM8KwMDknMjQuOCJOIDEwMcKwNDEnNTMuMyJF!5e0!3m2!1sen!2smy!4v1600000000000!5m2!1sen!2smy" 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1184.367956368523!2d101.70371841891945!3d3.1674659585802214!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc490029136eb3%3A0x5435818f65486218!2sRembayung!5e0!3m2!1sen!2smy!4v1769096509652!5m2!1sen!2smy" 
                             width="100%" 
                             height="100%" 
                             style="border:0;" 

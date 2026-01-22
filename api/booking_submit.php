@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Booking Submit API
  * Updated to support session-based time slots
@@ -90,24 +91,24 @@ if (!empty($data['session_id']) && !empty($data['booking_date'])) {
     if ($sessionMaxResult['success'] && !empty($sessionMaxResult['data'])) {
         $maxPax = (int)($sessionMaxResult['data'][0]['max_pax'] ?? 225);
     }
-    
+
     // Get current booked pax for this session/date
     $bookedResult = $supabase->get(
         'bookings',
-        'session_id=eq.' . $data['session_id'] . 
-        '&booking_date=eq.' . $data['booking_date'] . 
-        '&status=in.(pending,confirmed)&select=pax'
+        'session_id=eq.' . $data['session_id'] .
+            '&booking_date=eq.' . $data['booking_date'] .
+            '&status=in.(pending,confirmed)&select=pax'
     );
-    
+
     $bookedPax = 0;
     if ($bookedResult['success'] && !empty($bookedResult['data'])) {
         foreach ($bookedResult['data'] as $booking) {
             $bookedPax += (int)$booking['pax'];
         }
     }
-    
+
     $remainingPax = $maxPax - $bookedPax;
-    
+
     if ($data['pax'] > $remainingPax) {
         if ($remainingPax <= 0) {
             $errors[] = 'Sorry, this session is fully booked. Please select a different date or session.';
@@ -134,17 +135,17 @@ if ($result['success']) {
     ]);
 } else {
     http_response_code(400);
-    
+
     // Parse error message from database trigger or API
     $errorMsg = 'Failed to submit booking.';
     $rawError = '';
-    
+
     if (isset($result['data']['message'])) {
         $rawError = $result['data']['message'];
     } elseif (isset($result['data']['error'])) {
         $rawError = $result['data']['error'];
     }
-    
+
     // Check for capacity-related errors from our trigger
     if (strpos($rawError, 'Sorry,') !== false) {
         // Extract the user-friendly message from the trigger
@@ -158,7 +159,7 @@ if ($result['success']) {
     } elseif (!empty($rawError)) {
         $errorMsg .= ' ' . $rawError;
     }
-    
+
     echo json_encode([
         'success' => false,
         'message' => $errorMsg,

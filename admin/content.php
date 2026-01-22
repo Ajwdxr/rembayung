@@ -25,15 +25,22 @@ $menuData = $menuResult['success'] ? $menuResult['data'] : [];
 
 $galleryResult = $supabase->get('gallery_images', 'order=display_order.asc');
 $galleryData = $galleryResult['success'] ? $galleryResult['data'] : [];
+
+$heroResult = $supabase->get('hero_content', 'order=created_at.desc');
+$heroData = $heroResult['success'] ? $heroResult['data'] : [];
 ?>
 
 <div class="mb-8">
     <h1 class="text-2xl font-semibold text-kampung-charcoal">Content Management</h1>
-    <p class="text-gray-500">Manage your website's About, Menu, and Gallery content</p>
+    <p class="text-gray-500">Manage your website's Hero, About, Menu, and Gallery content</p>
 </div>
 
 <!-- Tabs -->
 <div class="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg w-fit">
+    <a href="?tab=hero" 
+       class="px-6 py-2 rounded-md text-sm font-medium transition-all <?= $activeTab === 'hero' ? 'bg-white shadow text-kampung-brown' : 'text-gray-600 hover:text-kampung-brown' ?>">
+        Hero Banner
+    </a>
     <a href="?tab=about" 
        class="px-6 py-2 rounded-md text-sm font-medium transition-all <?= $activeTab === 'about' ? 'bg-white shadow text-kampung-brown' : 'text-gray-600 hover:text-kampung-brown' ?>">
         About Section
@@ -46,6 +53,79 @@ $galleryData = $galleryResult['success'] ? $galleryResult['data'] : [];
        class="px-6 py-2 rounded-md text-sm font-medium transition-all <?= $activeTab === 'gallery' ? 'bg-white shadow text-kampung-brown' : 'text-gray-600 hover:text-kampung-brown' ?>">
         Gallery
     </a>
+</div>
+
+<!-- Hero Section Tab -->
+<div id="hero-tab" class="<?= $activeTab !== 'hero' ? 'hidden' : '' ?>">
+    <div class="admin-card">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-lg font-semibold text-kampung-charcoal">Hero Banner</h2>
+                <p class="text-sm text-gray-500">Manage the main background image on the homepage</p>
+            </div>
+            <button onclick="openHeroModal()" class="px-4 py-2 bg-kampung-brown text-white rounded-lg hover:bg-kampung-brown/90 transition-colors">
+                <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Hero Image
+            </button>
+        </div>
+        
+        <?php if (empty($heroData)): ?>
+        <div class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <p class="text-gray-500 mb-2">No hero image added yet</p>
+            <p class="text-gray-400 text-sm">The default Unsplash image will be used</p>
+        </div>
+        <?php else: ?>
+        <div class="space-y-4">
+            <?php foreach ($heroData as $hero): ?>
+            <div class="border rounded-lg p-4 hover:shadow-md transition-shadow <?= $hero['is_active'] ? 'border-green-200 bg-green-50/30' : 'border-gray-200' ?>">
+                <div class="flex gap-4">
+                    <?php if ($hero['image_filename']): ?>
+                    <img src="<?= BASE_URL ?>/assets/uploads/hero/<?= htmlspecialchars($hero['image_filename']) ?>" 
+                         alt="Hero image" class="w-48 h-28 object-cover rounded-lg">
+                    <?php else: ?>
+                    <div class="w-48 h-28 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <?php endif; ?>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <h3 class="font-semibold text-kampung-charcoal"><?= htmlspecialchars($hero['title'] ?? 'Hero Image') ?></h3>
+                            <?php if ($hero['is_active']): ?>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">Active</span>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ($hero['subtitle']): ?>
+                        <p class="text-gray-600 text-sm"><?= htmlspecialchars($hero['subtitle']) ?></p>
+                        <?php endif; ?>
+                        <?php if ($hero['tagline']): ?>
+                        <p class="text-kampung-brown italic text-sm mt-1"><?= htmlspecialchars($hero['tagline']) ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="editHero('<?= $hero['id'] ?>')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Edit">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteContent('hero_content', '<?= $hero['id'] ?>')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg" title="Delete">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <!-- About Section Tab -->
@@ -419,6 +499,66 @@ $galleryData = $galleryResult['success'] ? $galleryResult['data'] : [];
     </div>
 </div>
 
+<!-- Hero Modal -->
+<div id="heroModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b sticky top-0 bg-white">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-kampung-charcoal" id="heroModalTitle">Add Hero Image</h3>
+                <button onclick="closeModal('heroModal')" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <form id="heroForm" enctype="multipart/form-data" class="p-6 space-y-4">
+            <input type="hidden" name="id" id="heroId">
+            <input type="hidden" name="type" value="hero">
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Hero Image *</label>
+                <div id="heroImagePreview" class="mb-2 hidden">
+                    <img id="heroImagePreviewImg" src="" alt="Preview" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <input type="file" name="image" id="heroImage" accept="image/*"
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-kampung-brown focus:border-transparent"
+                       onchange="previewImage(this, 'heroImagePreviewImg', 'heroImagePreview')">
+                <p class="text-xs text-gray-500 mt-1">Recommended: 1920x1080px, JPG/PNG/WebP for best quality</p>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Title (Optional)</label>
+                <input type="text" name="title" id="heroTitle" placeholder="e.g., Restaurant Ambiance"
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-kampung-brown focus:border-transparent">
+                <p class="text-xs text-gray-500 mt-1">For your reference only, not displayed on website</p>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle (Optional)</label>
+                <input type="text" name="subtitle" id="heroSubtitle"
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-kampung-brown focus:border-transparent">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tagline (Optional)</label>
+                <input type="text" name="tagline" id="heroTagline"
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-kampung-brown focus:border-transparent">
+            </div>
+            
+            <div class="flex items-center pt-2">
+                <input type="checkbox" name="is_active" id="heroIsActive" value="1" checked class="mr-2 w-4 h-4 text-kampung-brown rounded">
+                <label for="heroIsActive" class="text-sm text-gray-700">Set as active hero image</label>
+            </div>
+            
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeModal('heroModal')" class="px-6 py-2 border rounded-lg hover:bg-gray-50">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-kampung-brown text-white rounded-lg hover:bg-kampung-brown/90">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Toast Notification -->
 <div id="toast" class="fixed bottom-4 right-4 z-50 hidden">
     <div class="flex items-center gap-3 px-6 py-4 rounded-lg shadow-lg" id="toastContent">
@@ -433,6 +573,7 @@ const BASE_URL = '<?= BASE_URL ?>';
 const aboutData = <?= json_encode($aboutData) ?>;
 const menuData = <?= json_encode($menuData) ?>;
 const galleryData = <?= json_encode($galleryData) ?>;
+const heroData = <?= json_encode($heroData) ?>;
 
 // Modal functions
 function openAboutModal() {
@@ -457,6 +598,15 @@ function openGalleryModal() {
     document.getElementById('galleryModalTitle').textContent = 'Add Gallery Image';
     document.getElementById('galleryImagePreview').classList.add('hidden');
     document.getElementById('galleryModal').classList.remove('hidden');
+}
+
+function openHeroModal() {
+    document.getElementById('heroForm').reset();
+    document.getElementById('heroId').value = '';
+    document.getElementById('heroModalTitle').textContent = 'Add Hero Image';
+    document.getElementById('heroImagePreview').classList.add('hidden');
+    document.getElementById('heroIsActive').checked = true;
+    document.getElementById('heroModal').classList.remove('hidden');
 }
 
 function closeModal(modalId) {
@@ -529,6 +679,27 @@ function editGallery(id) {
     document.getElementById('galleryModal').classList.remove('hidden');
 }
 
+function editHero(id) {
+    const item = heroData.find(h => h.id === id);
+    if (!item) return;
+    
+    document.getElementById('heroId').value = item.id;
+    document.getElementById('heroTitle').value = item.title || '';
+    document.getElementById('heroSubtitle').value = item.subtitle || '';
+    document.getElementById('heroTagline').value = item.tagline || '';
+    document.getElementById('heroIsActive').checked = item.is_active;
+    document.getElementById('heroModalTitle').textContent = 'Edit Hero Image';
+    
+    if (item.image_filename) {
+        document.getElementById('heroImagePreviewImg').src = `${BASE_URL}/assets/uploads/hero/${item.image_filename}`;
+        document.getElementById('heroImagePreview').classList.remove('hidden');
+    } else {
+        document.getElementById('heroImagePreview').classList.add('hidden');
+    }
+    
+    document.getElementById('heroModal').classList.remove('hidden');
+}
+
 // Image preview
 function previewImage(input, imgId, containerId) {
     const preview = document.getElementById(imgId);
@@ -582,6 +753,11 @@ document.getElementById('menuForm').addEventListener('submit', async function(e)
 document.getElementById('galleryForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     await submitForm(this, 'gallery');
+});
+
+document.getElementById('heroForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    await submitForm(this, 'hero');
 });
 
 async function submitForm(form, type) {
