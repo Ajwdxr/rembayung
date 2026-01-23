@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initThemeSwitcher();
     initNavbar();
     initMobileMenu();
+    initSmoothScrolling();
     initScrollAnimations();
     initBookingForm();
     initGallery();
@@ -47,6 +48,84 @@ function initMobileMenu() {
             mobileMenu.classList.add('hidden');
         });
     });
+}
+
+/**
+ * Smooth scrolling for anchor links
+ * Handles navigation links with hash anchors (#about, #menu, etc.)
+ */
+function initSmoothScrolling() {
+    // Get all links with hash anchors
+    const anchorLinks = document.querySelectorAll('a[href*="#"]');
+    
+    anchorLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // Check if it's a same-page anchor or includes the current page
+            const isExternalLink = href.startsWith('http') && !href.includes(window.location.host);
+            if (isExternalLink) return;
+            
+            // Extract the hash part
+            const hashIndex = href.indexOf('#');
+            if (hashIndex === -1) return;
+            
+            const hash = href.substring(hashIndex);
+            if (hash === '#' || hash === '') return;
+            
+            // Check if the link is to the same page or just a hash
+            const urlWithoutHash = href.substring(0, hashIndex);
+            const currentPath = window.location.pathname;
+            const isCurrentPage = urlWithoutHash === '' || 
+                                  urlWithoutHash.endsWith('/') || 
+                                  urlWithoutHash.endsWith('index.php') ||
+                                  currentPath.endsWith('index.php') ||
+                                  currentPath === urlWithoutHash ||
+                                  currentPath === '/';
+            
+            // If on the same page, do smooth scroll
+            if (isCurrentPage || urlWithoutHash === '' || urlWithoutHash.includes(window.location.pathname.split('/').pop())) {
+                const targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    e.preventDefault();
+                    
+                    // Get navbar height for offset
+                    const navbar = document.getElementById('navbar');
+                    const navbarHeight = navbar ? navbar.offsetHeight : 80;
+                    
+                    // Calculate target position with offset
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20;
+                    
+                    // Smooth scroll to target
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update URL hash without jumping
+                    history.pushState(null, null, hash);
+                }
+            }
+        });
+    });
+    
+    // Handle page load with hash in URL
+    if (window.location.hash) {
+        // Wait for page to fully load before scrolling
+        setTimeout(() => {
+            const targetElement = document.querySelector(window.location.hash);
+            if (targetElement) {
+                const navbar = document.getElementById('navbar');
+                const navbarHeight = navbar ? navbar.offsetHeight : 80;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+    }
 }
 
 /**
