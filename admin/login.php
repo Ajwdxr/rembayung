@@ -105,6 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         placeholder="••••••••">
                 </div>
 
+                <p class="text-sm text-gray-500 mt-2">The email and password is admin@rembayung.my and admin123. <br> this is for demo purposes only</p>
+
                 <button type="submit"
                     class="w-full py-3 bg-kampung-brown text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">
                     Sign In
