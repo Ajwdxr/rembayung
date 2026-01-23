@@ -39,7 +39,8 @@
 - **Real-time Availability** - Checks capacity before accepting bookings
 - **FIFO Queue System** - First-come-first-served booking with database triggers
 - **Form Validation** - Client and server-side validation
-- **Booking Confirmation** - Email-ready booking details
+- **Email Notifications** - Beautiful HTML emails for booking confirmations and status updates
+- **WhatsApp Alerts** - Instant admin notifications via CallMeBot
 
 ### 🔐 Admin Panel
 
@@ -50,6 +51,17 @@
 - **Closure Management** - Set restaurant closure dates
 - **Content Management** - Update Hero, About, Menu, and Gallery content
 - **Image Uploads** - Upload and manage images for menu and gallery
+- **Settings** - Change admin password securely
+
+### 📬 Notifications
+
+- **Email to Customers** - Automatic emails via Gmail SMTP:
+  - Booking received confirmation
+  - Booking confirmed notification
+  - Booking cancelled notification
+- **WhatsApp to Admin** - Instant alerts via CallMeBot:
+  - New booking notifications
+  - Booking status changes
 
 ---
 
@@ -62,6 +74,8 @@
 | **Frontend** | HTML5, CSS3, JavaScript                |
 | **Styling**  | TailwindCSS (CDN)                      |
 | **Server**   | Apache (XAMPP)                         |
+| **Email**    | PHPMailer + Gmail SMTP                 |
+| **WhatsApp** | CallMeBot API                          |
 | **Fonts**    | Google Fonts (Inter, Playfair Display) |
 
 ---
@@ -154,7 +168,7 @@ mkdir -p assets/uploads/gallery
 | **Email**    | admin@rembayung.my |
 | **Password** | admin123           |
 
-⚠️ **Important**: Change the default password after first login!
+⚠️ **Important**: Change the default password after first login via **Settings** page!
 
 ### Admin Features
 
@@ -215,6 +229,12 @@ Manage website content dynamically:
 - Set captions
 - Manage display order
 
+#### ⚙️ Settings (`/admin/settings.php`)
+
+- Change admin password
+- Account information display
+- Security tips
+
 ---
 
 ## 📡 API Endpoints
@@ -230,13 +250,14 @@ Manage website content dynamically:
 
 ### Admin APIs
 
-| Endpoint                        | Method              | Description           |
-| ------------------------------- | ------------------- | --------------------- |
-| `/admin/api/update_booking.php` | POST                | Update booking status |
-| `/admin/api/session_api.php`    | GET/POST/PUT/DELETE | CRUD for sessions     |
-| `/admin/api/closures_api.php`   | GET/POST/DELETE     | Manage closures       |
-| `/admin/api/content.php`        | GET/POST/PUT/DELETE | Manage content        |
-| `/admin/api/settings_api.php`   | GET/POST            | App settings          |
+| Endpoint                         | Method              | Description           |
+| -------------------------------- | ------------------- | --------------------- |
+| `/admin/api/update_booking.php`  | POST                | Update booking status |
+| `/admin/api/session_api.php`     | GET/POST/PUT/DELETE | CRUD for sessions     |
+| `/admin/api/closures_api.php`    | GET/POST/DELETE     | Manage closures       |
+| `/admin/api/content.php`         | GET/POST/PUT/DELETE | Manage content        |
+| `/admin/api/settings_api.php`    | GET/POST            | App settings          |
+| `/admin/api/change_password.php` | POST                | Change admin password |
 
 ---
 
@@ -246,6 +267,7 @@ Manage website content dynamically:
 rembayung/
 ├── admin/                    # Admin panel
 │   ├── api/                  # Admin API endpoints
+│   │   ├── change_password.php
 │   │   ├── closures_api.php
 │   │   ├── content.php
 │   │   ├── session_api.php
@@ -260,7 +282,8 @@ rembayung/
 │   ├── dashboard.php         # Admin dashboard
 │   ├── login.php             # Admin login
 │   ├── logout.php            # Admin logout
-│   └── sessions.php          # Session management
+│   ├── sessions.php          # Session management
+│   └── settings.php          # Admin settings
 │
 ├── api/                      # Public API endpoints
 │   ├── booking_submit.php
@@ -292,9 +315,14 @@ rembayung/
 │
 ├── includes/                 # PHP includes
 │   ├── config.php            # Configuration
+│   ├── email.php             # Email notifications (PHPMailer)
 │   ├── footer.php            # Site footer
 │   ├── header.php            # Site header
-│   └── supabase.php          # Supabase client
+│   ├── supabase.php          # Supabase client
+│   └── whatsapp.php          # WhatsApp notifications (CallMeBot)
+│
+├── PHPMailer/                # PHPMailer library
+│   └── src/
 │
 ├── booking.php               # Booking page
 ├── contact.php               # Contact page
@@ -351,15 +379,39 @@ Switch between 5 beautiful themes from the header menu:
 
 ```php
 // Base URL
-define('BASE_URL', 'http://localhost/rembayung');
+define('BASE_URL', '/rembayung');
 
 // Supabase
 define('SUPABASE_URL', 'https://your-project.supabase.co');
 define('SUPABASE_KEY', 'your-anon-key');
-
-// Admin session timeout (seconds)
-define('SESSION_TIMEOUT', 3600);
 ```
+
+### Email Configuration (`includes/email.php`)
+
+```php
+// Gmail SMTP
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_USERNAME', 'your-email@gmail.com');
+define('SMTP_PASSWORD', 'your-app-password');  // Generate from Google Account
+define('SMTP_FROM_NAME', 'Rembayung Restaurant');
+define('EMAIL_NOTIFICATIONS_ENABLED', true);
+```
+
+### WhatsApp Configuration (`includes/whatsapp.php`)
+
+```php
+// CallMeBot API
+define('CALLMEBOT_PHONE', 'your-phone-number');  // e.g., 60123456789
+define('CALLMEBOT_APIKEY', 'your-api-key');
+define('WHATSAPP_NOTIFICATIONS_ENABLED', true);
+```
+
+> **Getting CallMeBot API Key:**
+>
+> 1. Save +34 644 71 90 86 as a contact
+> 2. Send "I allow callmebot to send me messages" via WhatsApp
+> 3. You'll receive your API key
 
 ---
 

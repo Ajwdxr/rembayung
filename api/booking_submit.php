@@ -14,6 +14,8 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/supabase.php';
+require_once __DIR__ . '/../includes/whatsapp.php';
+require_once __DIR__ . '/../includes/email.php';
 
 // Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -128,6 +130,15 @@ if (!empty($errors)) {
 $result = $supabase->insert('bookings', $data);
 
 if ($result['success']) {
+    // Send WhatsApp notification to admin
+    $notificationData = array_merge($data, [
+        'booking_id' => $result['data'][0]['id'] ?? null
+    ]);
+    sendBookingNotification($notificationData);
+
+    // Send email confirmation to user
+    sendBookingConfirmationEmail($notificationData);
+
     echo json_encode([
         'success' => true,
         'message' => 'Booking submitted successfully',
