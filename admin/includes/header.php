@@ -45,9 +45,30 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 </head>
 
 <body class="bg-gray-50 font-body">
-    <div class="flex h-screen overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden fixed top-0 w-full z-40 bg-white border-b h-16 flex items-center px-4 justify-between shadow-sm">
+        <div class="flex items-center">
+            <button onclick="toggleSidebar()" class="text-gray-500 hover:text-kampung-brown focus:outline-none p-2 rounded-md hover:bg-gray-100">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <span class="ml-3 font-heading font-semibold text-xl text-kampung-brown">Rembayung Admin</span>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-kampung-gold flex items-center justify-center text-white font-semibold text-sm">
+            <?= strtoupper(substr($_SESSION['admin_name'] ?? 'A', 0, 1)) ?>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div class="flex h-screen overflow-hidden pt-16 md:pt-0">
+
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-30 hidden transition-opacity opacity-0" onclick="toggleSidebar()"></div>
+
         <!-- Sidebar -->
-        <aside class="w-64 admin-sidebar flex-shrink-0 fixed inset-y-0 left-0 z-30 overflow-y-auto">
+        <aside id="sidebar" class="w-64 admin-sidebar flex-shrink-0 fixed inset-y-0 left-0 z-40 md:z-30 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
             <div class="p-6">
                 <h1 class="font-heading text-2xl font-semibold text-kampung-gold">Rembayung</h1>
                 <p class="text-gray-500 text-sm">Admin Console</p>
@@ -117,4 +138,25 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 ml-64 p-8 overflow-y-auto">
+        <main class="flex-1 w-full md:ml-64 p-4 md:p-8 overflow-y-auto min-h-screen">
+            <script>
+                function toggleSidebar() {
+                    const sidebar = document.getElementById('sidebar');
+                    const overlay = document.getElementById('sidebarOverlay');
+
+                    if (sidebar.classList.contains('-translate-x-full')) {
+                        sidebar.classList.remove('-translate-x-full');
+                        overlay.classList.remove('hidden');
+                        // Small timeout to allow display:block to apply before opacity transition
+                        setTimeout(() => {
+                            overlay.classList.remove('opacity-0');
+                        }, 10);
+                    } else {
+                        sidebar.classList.add('-translate-x-full');
+                        overlay.classList.add('opacity-0');
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                        }, 300);
+                    }
+                }
+            </script>
