@@ -51,6 +51,7 @@
 - **Closure Management** - Set restaurant closure dates
 - **Content Management** - Update Hero, About, Menu, and Gallery content
 - **Image Uploads** - Upload and manage images for menu and gallery
+- **Table Management** - Design floor plans, set table capacities, and tracking status
 - **Settings** - Change admin password securely
 
 ### 📬 Notifications
@@ -229,6 +230,13 @@ Manage website content dynamically:
 - Set captions
 - Manage display order
 
+#### 🪑 Tables Management (`/admin/tables.php`)
+
+- **Floor Planning** - Manage Ground Floor and Rooftop tables
+- **Capacity Control** - Set min/max pax per table
+- **Status Tracking** - Mark tables as Active, Maintenance, or Inactive
+- **Visual Grid** - Overview of all tables by floor
+
 #### ⚙️ Settings (`/admin/settings.php`)
 
 - Change admin password
@@ -255,6 +263,7 @@ Manage website content dynamically:
 | `/admin/api/update_booking.php`  | POST                | Update booking status |
 | `/admin/api/session_api.php`     | GET/POST/PUT/DELETE | CRUD for sessions     |
 | `/admin/api/closures_api.php`    | GET/POST/DELETE     | Manage closures       |
+| `/admin/api/tables.php`          | GET/POST/PUT/DELETE | Manage tables         |
 | `/admin/api/content.php`         | GET/POST/PUT/DELETE | Manage content        |
 | `/admin/api/settings_api.php`    | GET/POST            | App settings          |
 | `/admin/api/change_password.php` | POST                | Change admin password |
@@ -272,6 +281,7 @@ rembayung/
 │   │   ├── content.php
 │   │   ├── session_api.php
 │   │   ├── settings_api.php
+│   │   ├── tables.php
 │   │   └── update_booking.php
 │   ├── includes/             # Admin includes
 │   │   ├── header.php
@@ -283,7 +293,8 @@ rembayung/
 │   ├── login.php             # Admin login
 │   ├── logout.php            # Admin logout
 │   ├── sessions.php          # Session management
-│   └── settings.php          # Admin settings
+│   ├── settings.php          # Admin settings
+│   └── tables.php            # Table management
 │
 ├── api/                      # Public API endpoints
 │   ├── booking_submit.php
@@ -338,18 +349,19 @@ rembayung/
 
 ### Tables Overview
 
-| Table            | Description              |
-| ---------------- | ------------------------ |
-| `bookings`       | Customer reservations    |
-| `admins`         | Admin users              |
-| `sessions`       | Lunch/dinner sessions    |
-| `time_slots`     | Time slots per session   |
-| `closures`       | Restaurant closure dates |
-| `settings`       | App configuration        |
-| `hero_content`   | Hero banner content      |
-| `about_content`  | About section content    |
-| `menu_items`     | Menu items               |
-| `gallery_images` | Gallery images           |
+| Table               | Description                    |
+| ------------------- | ------------------------------ |
+| `bookings`          | Customer reservations          |
+| `admins`            | Admin users                    |
+| `sessions`          | Lunch/dinner sessions          |
+| `time_slots`        | Time slots per session         |
+| `closures`          | Restaurant closure dates       |
+| `settings`          | App configuration              |
+| `hero_content`      | Hero banner content            |
+| `about_content`     | About section content          |
+| `menu_items`        | Menu items                     |
+| `gallery_images`    | Gallery images                 |
+| `restaurant_tables` | Table management configuration |
 
 ### Key Relationships
 
