@@ -36,6 +36,7 @@ $data = [
     'phone' => sanitize($_POST['phone'] ?? ''),
     'email' => sanitize($_POST['email'] ?? ''),
     'special_requests' => sanitize($_POST['special_requests'] ?? ''),
+    'floor_preference' => sanitize($_POST['floor_preference'] ?? 'any'),
     'status' => 'pending'
 ];
 

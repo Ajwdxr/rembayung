@@ -278,7 +278,15 @@ function sendBookingStatusEmail($booking, $status)
                 <tr>
                     <td style="padding: 8px 0; color: #666;">👥 Party Size</td>
                     <td style="padding: 8px 0; color: #2C2C2C; font-weight: 600;">' . $booking['pax'] . ' people</td>
-                </tr>
+                </tr>' . (!empty($booking['table_name']) ? '
+                <tr>
+                    <td style="padding: 8px 0; color: #666;">🪑 Table</td>
+                    <td style="padding: 8px 0; color: #2C2C2C; font-weight: 600;">' . htmlspecialchars($booking['table_name']) . '</td>
+                </tr>' : '') . (!empty($booking['floor_preference']) && $booking['floor_preference'] !== 'any' ? '
+                <tr>
+                    <td style="padding: 8px 0; color: #666;">📍 Floor</td>
+                    <td style="padding: 8px 0; color: #2C2C2C; font-weight: 600;">' . ucfirst($booking['floor_preference']) . ' Floor</td>
+                </tr>' : '') . '
             </table>
         </div>';
 
