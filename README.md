@@ -37,6 +37,11 @@
 - **Session Management** - Lunch and dinner sessions with capacity limits
 - **Time Slot Selection** - Multiple time slots per session
 - **Real-time Availability** - Checks capacity before accepting bookings
+- **Visual Table Layout** - SVG-based floor plan showing table availability:
+  - White tables with circular chairs
+  - Green/Red status indicators
+  - Floor switching (Ground Floor / Upper Floor)
+  - Responsive grid layout (3 tables per row)
 - **FIFO Queue System** - First-come-first-served booking with database triggers
 - **Form Validation** - Client and server-side validation
 - **Email Notifications** - Beautiful HTML emails for booking confirmations and status updates
@@ -249,12 +254,13 @@ Manage website content dynamically:
 
 ### Public APIs
 
-| Endpoint                    | Method | Description                          |
-| --------------------------- | ------ | ------------------------------------ |
-| `/api/get_calendar.php`     | GET    | Get calendar data with availability  |
-| `/api/get_sessions.php`     | GET    | Get available sessions for a date    |
-| `/api/get_availability.php` | GET    | Get detailed availability for a date |
-| `/api/booking_submit.php`   | POST   | Submit a new booking                 |
+| Endpoint                    | Method | Description                             |
+| --------------------------- | ------ | --------------------------------------- |
+| `/api/get_calendar.php`     | GET    | Get calendar data with availability     |
+| `/api/get_sessions.php`     | GET    | Get available sessions for a date       |
+| `/api/get_availability.php` | GET    | Get detailed availability for a date    |
+| `/api/get_table_status.php` | GET    | Get table availability for date/session |
+| `/api/booking_submit.php`   | POST   | Submit a new booking                    |
 
 ### Admin APIs
 
@@ -300,7 +306,8 @@ rembayung/
 │   ├── booking_submit.php
 │   ├── get_availability.php
 │   ├── get_calendar.php
-│   └── get_sessions.php
+│   ├── get_sessions.php
+│   └── get_table_status.php  # Table availability API
 │
 ├── assets/                   # Static assets
 │   ├── css/

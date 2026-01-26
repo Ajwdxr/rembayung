@@ -109,7 +109,7 @@ $pageTitle = 'Reserve a Table';
                         <div class="flex flex-col md:flex-row justify-between items-end md:items-center mb-6 gap-4">
                             <label class="form-label mb-0">
                                 <span>Table Availability</span>
-                                <span class="block text-xs font-normal text-gray-500 mt-1">Green circle = Vacant · Red circle = Occupied</span>
+                                <span class="block text-xs font-normal text-gray-500 mt-1">F = Floor · T = Table Pax · Number = Table Number</span>
                             </label>
 
                             <!-- Legend -->
@@ -844,7 +844,7 @@ $pageTitle = 'Reserve a Table';
                     ${svg}
                 </div>
                 <div class="text-center">
-                   <div class="text-sm text-gray-300 font-medium">${table.min_pax}-${table.max_pax} PAX</div>
+                   <div class="text-sm text-gray-300 font-medium">${table.name}</div>
                    ${isBooked ? '<div class="text-xs text-red-400 font-bold uppercase tracking-wider mt-1">Occupied</div>' : '<div class="text-xs text-green-400 font-bold uppercase tracking-wider mt-1">Available</div>'}
                 </div>
             `;
@@ -858,11 +858,11 @@ $pageTitle = 'Reserve a Table';
     function generateTableSVG(table, isBooked) {
         // Dimensions
         const width = 280;
-        const height = 200;
+        const height = 220;
         const tableWidth = 160;
         const tableHeight = 90;
         const chairRadius = 18;
-        const statusRadius = 28;
+        const statusRadius = 38; // Larger to fit full table name
 
         // Colors
         const tableColor = '#FFFFFF';
@@ -909,15 +909,15 @@ $pageTitle = 'Reserve a Table';
         svgContent += `<rect x="${cx - tableWidth/2}" y="${cy - tableHeight/2}" width="${tableWidth}" height="${tableHeight}" rx="8" fill="${tableColor}" />`;
 
         // --- 3. Draw Status Circle (Center) ---
-        svgContent += `<circle cx="${cx}" cy="${cy}" r="${statusRadius}" fill="${statusColor}" stroke="${statusStroke}" stroke-width="1" />`;
+        svgContent += `<circle cx="${cx}" cy="${cy}" r="${statusRadius}" fill="${statusColor}" stroke="${statusStroke}" stroke-width="2" />`;
 
-        // --- 4. Draw Table Text (Inside Status Circle) ---
-        // Extract number from name if possible, else use name
-        // E.g., "Table 1" -> "T1"
-        let label = table.name.replace(/Table\s*/i, 'T');
-        if (label.length > 3) label = label.substring(0, 3);
+        // --- 4. Draw Table Name (Inside Status Circle) ---
+        // Use full table name for clarity
+        let label = table.name;
+        // Adjust font size based on label length
+        let fontSize = label.length > 6 ? 12 : (label.length > 4 ? 14 : 16);
 
-        svgContent += `<text x="${cx}" y="${cy}" dy="0.35em" text-anchor="middle" font-size="18" font-weight="bold" fill="${textColor}" font-family="sans-serif">${label}</text>`;
+        svgContent += `<text x="${cx}" y="${cy}" dy="0.35em" text-anchor="middle" font-size="${fontSize}" font-weight="bold" fill="${textColor}" font-family="sans-serif">${label}</text>`;
 
         return `<svg viewBox="0 0 ${width} ${height}" class="w-full h-full" preserveAspectRatio="xMidYMid meet">${svgContent}</svg>`;
     }
