@@ -104,6 +104,49 @@ $pageTitle = 'Reserve a Table';
                         </div>
                     </div>
 
+                    <!-- Table Layout Visuals -->
+                    <div id="tableLayoutSection" class="hidden mt-8 mb-8 animate-fadeInUp">
+                        <div class="flex flex-col md:flex-row justify-between items-end md:items-center mb-6 gap-4">
+                            <label class="form-label mb-0">
+                                <span>Table Availability</span>
+                                <span class="block text-xs font-normal text-gray-500 mt-1">Green circle = Vacant · Red circle = Occupied</span>
+                            </label>
+
+                            <!-- Legend -->
+                            <div class="flex gap-4 text-xs bg-gray-100 p-2 rounded-lg">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-3 h-3 bg-green-400 rounded-full shadow-sm"></span>
+                                    <span class="text-gray-700 font-medium">Vacant</span>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-3 h-3 bg-red-400 rounded-full shadow-sm"></span>
+                                    <span class="text-gray-700 font-medium">Occupied</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floor Tabs -->
+                        <div class="flex gap-2 mb-4">
+                            <button type="button" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 floor-tab bg-kampung-charcoal text-white shadow-lg transform scale-105" data-floor="1">
+                                Ground Floor
+                            </button>
+                            <button type="button" class="pb-2 text-sm font-medium text-gray-400 hover:text-kampung-brown transition-colors floor-tab" data-floor="2">
+                                Upper Floor
+                            </button>
+                        </div>
+
+                        <!-- Visual Container -->
+                        <div id="tableContainer" class="bg-gray-900 p-8 rounded-2xl shadow-inner min-h-[400px] relative overflow-hidden">
+                            <!-- Background Pattern -->
+                            <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+                            <!-- Tables rendered here -->
+                            <div class="relative z-10 flex items-center justify-center h-full text-gray-500 text-sm min-h-[300px]">
+                                Select a date and session to check table status
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Session Row with Availability -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 
@@ -322,6 +365,8 @@ $pageTitle = 'Reserve a Table';
     let calendarData = {};
     let currentMonth = new Date();
     let selectedDate = null;
+    let tablesData = [];
+    let currentFloor = 1;
 
     const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
@@ -553,6 +598,9 @@ $pageTitle = 'Reserve a Table';
 
         // Check availability for session
         checkAvailability();
+
+        // Load table status
+        loadTableStatus();
     }
 
     // ============ SESSION FUNCTIONS ============
@@ -590,6 +638,7 @@ $pageTitle = 'Reserve a Table';
         sessionSelect.addEventListener('change', function() {
             handleSessionChange();
             checkAvailability();
+            loadTableStatus();
         });
     }
 
@@ -704,12 +753,191 @@ $pageTitle = 'Reserve a Table';
             text.innerHTML = `<span class="${bgClass}">Only ${remaining_pax} pax left!</span>`;
             subtext.textContent = `${booked_pax} of ${max_pax} pax booked - Book now!`;
         } else {
-            text.innerHTML = `<span class="${bgClass}">${remaining_pax} pax available</span>`;
-            subtext.textContent = `${booked_pax} of ${max_pax} pax booked`;
+            text.innerHTML = `<span class="${bgClass}">${booked_pax} of ${max_pax} pax booked</span>`;
+            subtext.textContent = `${remaining_pax} pax available`;
         }
 
         indicator.classList.remove('hidden');
     }
+
+    // ============ TABLE LAYOUT FUNCTIONS ============
+
+    async function loadTableStatus() {
+        const date = document.getElementById('booking_date').value;
+        const sessionId = document.getElementById('session_id').value;
+        const section = document.getElementById('tableLayoutSection');
+        const container = document.getElementById('tableContainer');
+
+        if (!date) {
+            section.classList.add('hidden');
+            return;
+        }
+
+        // Show section once date is picked
+        section.classList.remove('hidden');
+
+        if (!sessionId) {
+            container.innerHTML = `
+                <div class="relative z-10 flex items-center justify-center h-full text-gray-500 text-sm min-h-[300px]">
+                    Please select a session to view table availability
+                </div>
+            `;
+            return;
+        }
+
+        try {
+            const url = `${BASE_URL}/api/get_table_status.php?date=${date}&session_id=${sessionId}`;
+            const response = await fetch(url);
+            const result = await response.json();
+
+            if (result.success) {
+                tablesData = result.data;
+                renderTableLayout();
+            }
+        } catch (error) {
+            console.error('Error loading table status:', error);
+            container.innerHTML = `
+                <div class="relative z-10 flex items-center justify-center h-full text-red-400 text-sm min-h-[300px]">
+                    Error loading table data.
+                </div>
+            `;
+        }
+    }
+
+    function renderTableLayout() {
+        const container = document.getElementById('tableContainer');
+        container.innerHTML = ''; // Clear current
+
+        // Add background pattern again since we cleared innerHTML
+        const bgPattern = document.createElement('div');
+        bgPattern.className = 'absolute inset-0 opacity-5 pointer-events-none';
+        bgPattern.style.cssText = 'background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 20px 20px;';
+        container.appendChild(bgPattern);
+
+        // Filter tables by floor
+        const floorTables = tablesData.filter(t => t.floor === currentFloor);
+
+        if (floorTables.length === 0) {
+            const msg = document.createElement('div');
+            msg.className = 'relative z-10 flex items-center justify-center h-full text-gray-500 text-sm min-h-[300px]';
+            msg.textContent = 'No tables found for this floor.';
+            container.appendChild(msg);
+            return;
+        }
+
+        // Create Grid Container
+        const grid = document.createElement('div');
+        grid.className = 'relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-6';
+
+        floorTables.forEach(table => {
+            const isBooked = table.status === 'booked';
+
+            // Generate SVG with simple white design
+            const svg = generateTableSVG(table, isBooked);
+
+            // Container for SVG
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex flex-col items-center justify-center gap-3 p-4 bg-gray-800 rounded-xl border border-gray-700 transition-transform duration-300 hover:scale-105';
+
+            wrapper.innerHTML = `
+                <div class="w-full aspect-[4/3] flex items-center justify-center filter drop-shadow-lg">
+                    ${svg}
+                </div>
+                <div class="text-center">
+                   <div class="text-sm text-gray-300 font-medium">${table.min_pax}-${table.max_pax} PAX</div>
+                   ${isBooked ? '<div class="text-xs text-red-400 font-bold uppercase tracking-wider mt-1">Occupied</div>' : '<div class="text-xs text-green-400 font-bold uppercase tracking-wider mt-1">Available</div>'}
+                </div>
+            `;
+
+            grid.appendChild(wrapper);
+        });
+
+        container.appendChild(grid);
+    }
+
+    function generateTableSVG(table, isBooked) {
+        // Dimensions
+        const width = 280;
+        const height = 200;
+        const tableWidth = 160;
+        const tableHeight = 90;
+        const chairRadius = 18;
+        const statusRadius = 28;
+
+        // Colors
+        const tableColor = '#FFFFFF';
+        const chairColor = '#FFFFFF';
+        const statusColor = isBooked ? '#ef4444' : '#4ade80'; // red-500 : green-400
+        const statusStroke = isBooked ? '#b91c1c' : '#22c55e';
+        const textColor = '#000000'; // Black text on colored circle
+
+        // Center
+        const cx = width / 2;
+        const cy = height / 2;
+
+        let svgContent = '';
+
+        // --- 1. Draw Chairs (Below Table) ---
+        const pax = table.max_pax;
+        const chairsTop = Math.ceil(pax / 2);
+        const chairsBottom = Math.floor(pax / 2);
+
+        // Spacing logic (centered)
+        const spacingX = (tableWidth + 20) / (Math.max(chairsTop, chairsBottom) + 1);
+        const startX = cx - (tableWidth / 2);
+
+        // Top Chairs
+        for (let i = 0; i < chairsTop; i++) {
+            // Distribute evenly along the top edge
+            const offset = (tableWidth / (chairsTop + 1)) * (i + 1);
+            const chairX = startX + offset;
+            const chairY = cy - (tableHeight / 2) - chairRadius - 4;
+
+            svgContent += `<circle cx="${chairX}" cy="${chairY}" r="${chairRadius}" fill="${chairColor}" />`;
+        }
+
+        // Bottom Chairs
+        for (let i = 0; i < chairsBottom; i++) {
+            const offset = (tableWidth / (chairsBottom + 1)) * (i + 1);
+            const chairX = startX + offset;
+            const chairY = cy + (tableHeight / 2) + chairRadius + 4;
+
+            svgContent += `<circle cx="${chairX}" cy="${chairY}" r="${chairRadius}" fill="${chairColor}" />`;
+        }
+
+        // --- 2. Draw Table (Middle) ---
+        svgContent += `<rect x="${cx - tableWidth/2}" y="${cy - tableHeight/2}" width="${tableWidth}" height="${tableHeight}" rx="8" fill="${tableColor}" />`;
+
+        // --- 3. Draw Status Circle (Center) ---
+        svgContent += `<circle cx="${cx}" cy="${cy}" r="${statusRadius}" fill="${statusColor}" stroke="${statusStroke}" stroke-width="1" />`;
+
+        // --- 4. Draw Table Text (Inside Status Circle) ---
+        // Extract number from name if possible, else use name
+        // E.g., "Table 1" -> "T1"
+        let label = table.name.replace(/Table\s*/i, 'T');
+        if (label.length > 3) label = label.substring(0, 3);
+
+        svgContent += `<text x="${cx}" y="${cy}" dy="0.35em" text-anchor="middle" font-size="18" font-weight="bold" fill="${textColor}" font-family="sans-serif">${label}</text>`;
+
+        return `<svg viewBox="0 0 ${width} ${height}" class="w-full h-full" preserveAspectRatio="xMidYMid meet">${svgContent}</svg>`;
+    }
+
+    // Floor Tab Handlers
+    document.querySelectorAll('.floor-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Update UI
+            document.querySelectorAll('.floor-tab').forEach(t => {
+                t.className = 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 floor-tab text-gray-500 hover:bg-gray-100'; // Reset to inactive
+            });
+
+            // Set active style
+            this.className = 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 floor-tab bg-kampung-charcoal text-white shadow-lg transform scale-105';
+
+            // Update State
+            currentFloor = parseInt(this.dataset.floor);
+            renderTableLayout();
+        });
+    });
 
     // ============ FORM HANDLER ============
 
